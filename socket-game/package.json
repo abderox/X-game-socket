@@ -1,0 +1,23 @@
+{
+  "name": "socket-game",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "nodemon"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "express": "^4.18.2",
+    "nodemon": "^2.0.20",
+    "path": "^0.12.7",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.4"
+  }
+}
