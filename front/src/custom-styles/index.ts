@@ -42,6 +42,21 @@ const GameDescription = styled.div`
   width: 100%;
   line-height: 1.5;
 
+  /*change text on small screens*/
+  @media (max-width: 600px) {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 300px) {
+    font-size: 0.8rem;
+  }
+
+
+
 `
 
 

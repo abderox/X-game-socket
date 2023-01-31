@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 
 
@@ -253,6 +253,17 @@ const SquareContainer =
       }
       */
       
+      /*change font size on small screens*/
+
+        @media (max-width: 600px) {
+            font-size: 5vh;
+        }
+        @media (max-width: 400px) {
+            font-size: 3vh;
+        }
+        @media (max-width: 300px) {
+            font-size: 2vh;
+        }
  
     
 
@@ -279,6 +290,7 @@ const DisplayScore =
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-bottom : 5rem;
     z-index: 10;
     font-size: 8vh;
     font-weight: bold;
@@ -336,7 +348,7 @@ const DisplayScore =
         
     `
 
-    const Button = 
+const Button =
     styled.button`
     border: 5px solid transparent;
     background: linear-gradient(white, white) padding-box,
@@ -350,17 +362,19 @@ const DisplayScore =
     margin: 1vh 1vh;
     border-radius: 5px;
     color : teal;
-    transition: all 0.3s ease-in-out;
+
     &:hover{
-        background: linear-gradient(white, white) padding-box,
+        background:
         linear-gradient(to right,
-        #31CCCC, #3B86DE) border-box;
-        border: 2px solid #31CCCC;
-        color: #31CCCC;
+        #31CCCC, #3B86DE) ;
+        border: none;
+        color: white;
+        width : 6.5rem;
+
     }
     `
 
-    const GameInfo = 
+const GameInfo =
     styled.div`
     display: flex;
     flex-direction: row;
@@ -369,23 +383,22 @@ const DisplayScore =
     width: 100%;
     height: 5vh;
     padding :0;
-    border: none
-    background: white;
-    border-radius: 5px;
     margin: 1vh 0;
     `
 
-    const GameInfoText =
+const GameInfoText =
     styled.div`
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    width: 40%%;
     height: 5vh;    
-    padding :0;
+    padding: 1vh 2vh;
+    width : 90%;
+    margin: 1vh 1vh;
     border: none
-    font-size: 1rem;
+    font-size: 1.3rem;
     font-weight: bold;
     color : teal;
     `
@@ -396,20 +409,25 @@ const Board = (
     {
         squares,
         onClick,
+        reset
     }: {
         squares: Array<string | null>,
         onClick: (i: number) => void,
+        reset : boolean
     }
 ) => {
     const renderSquare = (i: number) => {
         return (
             <Square
-                value={squares[i]}
+                value={
+                     !reset ? squares[i]  :""
+                }
                 onClick={() => onClick(i)}
             />
         );
     }
 
+  
     return (
         <BoardContainer>
             <div className="board-row">
@@ -434,10 +452,12 @@ const Board = (
 const Alert = (
     {
         winner,
-        state
+        state,
+        close
     }: {
         winner: string,
-        state: any
+        state: any,
+        close: () => void
     }
 
 ) => {
@@ -447,22 +467,27 @@ const Alert = (
                 {winner} Won!
             </AlertTitle>
             <DisplayScore>
-              <span className="big-letter"> 
-                 X: 
-               </span>
-                <span className="span">
-                 {state.x}
+                <span className="big-letter">
+                    X:
                 </span>
-                <span className="vs" data-text="vs"> 
-                  VS 
+                <span className="span">
+                    {state.x}
+                </span>
+                <span className="vs" data-text="vs">
+                    VS
                 </span>
                 <span className="big-letter">
-                O:
+                    O:
                 </span>
                 <span className="span">
-                 {state.o}
+                    {state.o}
                 </span>
             </DisplayScore>
+            <Button
+                onClick={close}
+            >
+                Close
+            </Button>
         </AlertContainer>
     );
 }
@@ -500,11 +525,87 @@ const GameContent = () => {
 
 
     const [state, setstate] = React.useState({ x: 0, o: 0 });
+    const [end, setend] = useState(false);
+    const [started, setstarted] = useState(false);
+    const [reset, setreset] = useState(false);
+    const [clear, setclear] = useState(false);
+    const [times,settimes] = useState(0);
+
+    //concat new game to gamestate
+    const newGame = () => {
+        settimes(()=>( times+1) );
+        setclear(false);
+        setreset(false);
+        setstarted(true);
+        setGameState({
+            history: [{
+                squares: Array(9).fill(null),
+            }],
+            stepNumber: 0,
+            xIsNext: true,
+        })
+
+    }
+
+    const resetGame = () => {
+        setreset(true);
+        setclear(false);
+        setstarted(false);
+        setstate({ x: 0, o: 0 });
+        setend(false);
+        settimes(0);
+        
+    }
+
+
+    const closeAlert = () =>{
+        setend(false);
+        setstarted(false);
+        setclear(true);
+    }
+
+    useEffect(
+        () => {
+            if(!started)
+            {
+                return;
+            }
+            const history = gameState.history.slice(0, gameState.stepNumber + 1);
+            const current = history[history.length - 1];
+            const squares = current.squares.slice();
+            if (calculateWinner(squares)) {
+                setstate(
+                    {
+                        x: !gameState.xIsNext ? state.x + 1 : state.x,
+                        o: gameState.xIsNext ? state.o + 1 : state.o
+                    }
+                )
+                setend(true);
+                return;
+            }
+
+            else if (
+                !squares.includes(null)
+            ) {
+                setend(true);
+                return;
+            }
+            
+        }
+    ,[
+        gameState.stepNumber,
+    ]
+        )
 
 
 
 
     const handleClick = (i: number) => {
+
+        if(!started)
+        {
+            return;
+        }
 
         const history = gameState.history.slice(0, gameState.stepNumber + 1);
         const current = history[history.length - 1];
@@ -512,16 +613,8 @@ const GameContent = () => {
         if (squares[i]) {
             return;
         }
-        if (calculateWinner(squares)) {
-            setstate(
-                {
-                    x: gameState.xIsNext ? state.x + 1 : state.x,
-                    o: !gameState.xIsNext ? state.o + 1 : state.o
-                }
-            )
+      
 
-            return;
-        }
         squares[i] = gameState.xIsNext ? 'X' : 'O';
         setGameState({
             history: history.concat([{
@@ -559,19 +652,21 @@ const GameContent = () => {
     return (
         <>
             <GameInfo>
-                <Button onClick={() => setGameState({
-                    history: [{
-                        squares: Array(9).fill(null),
-                    }],
-                    stepNumber: 0,
-                    xIsNext: true,
-                })}>
-
-                    Start
+                <Button onClick={() =>
+                    newGame()
+                } disabled = {started}>
+                    {started ? "started" : "start"}
                 </Button>
-                
-                <Button onClick={() => setstate({ x: 0, o: 0 })}>
-                    Reset 
+                <GameInfoText>
+                    X:{state.x} {" | "} O:{state.o}
+                </GameInfoText>
+                <GameInfoText>
+                    Times : {times}
+                </GameInfoText>
+                <Button onClick={() =>
+                    resetGame()
+                }>
+                    Reset
                 </Button>
             </GameInfo>
 
@@ -579,11 +674,17 @@ const GameContent = () => {
             <Board
                 squares={gameState.history[gameState.stepNumber].squares}
                 onClick={(i) => handleClick(i)}
+                reset={reset || clear}
+                
             />
-            <Alert
-                winner={calculateWinner(gameState.history[gameState.stepNumber].squares) || 'Nobody'}
-                state={state}
-            />
+            {
+                end &&
+                <Alert
+                    winner={calculateWinner(gameState.history[gameState.stepNumber].squares) || 'Nobody'}
+                    state={state}
+                    close={closeAlert}
+                />
+            }
 
 
         </>
