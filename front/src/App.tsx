@@ -69,7 +69,7 @@ const App = () => {
 
 
   useEffect(() => {
-    connect();
+    // connect();
   }, []);
 
   return (
