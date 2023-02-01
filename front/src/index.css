@@ -54,3 +54,89 @@ code {
   width: 100%;
 }
 
+
+.disabled {
+  filter: blur(5px);
+  pointer-events: none;
+}
+
+.Joining-text{
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #31CCCC;
+  overflow : hidden;
+  white-space: nowrap;
+  letter-spacing: .15em;
+
+}
+
+ .Joining-points {
+  animation: 
+    typing 1s  infinite;
+}
+
+
+
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 5% }
+}
+
+
+
+.blinking-text{
+  background-color: #0000009c;
+  color: #ffffff;
+  border-right: 0.15em solid #000000;
+  white-space: nowrap;
+  letter-spacing: 0.15em;
+  animation:
+    typing_ 10s alternate infinite ,
+    blink-caret_ .75s step-end infinite;
+
+  }
+
+  @keyframes typing_ {
+   
+    20% {
+      background-color: #0000009c;
+      color: #ffffff;
+      border-right-color: #ffffff;
+    }
+    40% {
+      background-color : #31ccccbb;
+      color: #ffffff;
+      border-right-color: #ffffff;
+
+    }
+    60% {
+      background-color : rgba(0, 128, 128, 0.678);
+      color: #ffffff;
+      border-right-color: #ffffff;
+
+    }
+    80% {
+      background-color: #0088b1b0;
+      color: #ffffff;
+      border-right-color: #ffffff;
+
+    }
+    
+    100% {
+      background-color: #5600c78a ;
+      color: #ffffff;
+      border-right-color: #ffffff;
+
+    }
+    
+
+
+  }
+
+  @keyframes blink-caret_ {
+    from, to { border-color: transparent }
+    50% { border-color: #000000; }
+  }
+
+

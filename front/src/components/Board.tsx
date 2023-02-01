@@ -9,11 +9,13 @@ const Board = (
     {
         squares,
         onClick,
-        reset
+        reset,
+        disabled
     }: {
         squares: Array<string | null>,
         onClick: (i: number) => void,
-        reset: boolean
+        reset: boolean,
+        disabled: boolean
     }
 ) => {
     const renderSquare = (i: number) => {
@@ -29,7 +31,9 @@ const Board = (
 
 
     return (
-        <BoardContainer>
+        <BoardContainer className={
+            disabled ? "disabled" : ""
+        }>
             <div className="board-row">
                 {renderSquare(0)}
                 {renderSquare(1)}

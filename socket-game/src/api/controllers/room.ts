@@ -49,7 +49,13 @@ export class RoomController {
          else  {
             socket.join(data.room);
             socket.emit('joined', data.room);
-            console.log('joined room', data.room)
+
+            if(room.size === 2) {
+                socket.emit("start_game", { start: true, symbol: "x" });
+                socket
+                .to(data.room)
+                .emit("start_game", { start: false, symbol: "o" });
+            }
         }
         // if the room is full, send an error message
        

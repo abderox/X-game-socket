@@ -55,7 +55,7 @@ const GameDescription = styled.div`
     font-size: 0.8rem;
   }
 
-
+       
 
 `
 
@@ -358,6 +358,9 @@ const BoardContainer =
         }
    
     }
+
+    /*make it blurry and disabled*/
+    
 `;
 
 
@@ -583,7 +586,56 @@ const GameInfoText =
     color : teal;
     `
 
+  const JoinRoomForm = 
+  styled.form`
+    display: flex;
+    flex-direction:row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 5vh;
+    padding :0;
+    margin: 1vh 0;
+    `
 
+  const JoinRoomInput = 
+  styled.input`
+    border :
+    1px solid #31CCCC;
+    border-radius: 5px;
+    padding: 1vh 2vh;
+    width : 90%;
+    height: 2.5vh;
+    margin: 1vh 1vh;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color : teal !important;
+    caret-color: teal;
+    outline:
+    none;
+          &:focus {
+            border: 1px solid #3B86DE;
+          }
+    `
+
+    const JoinRoomButton =
+    styled.button`
+    all : unset;
+    cursor: pointer;
+    margin: 1vh 1vh;
+    background :
+    linear-gradient(to right,
+    #31CCCC, #3B86DE) ;
+    padding: 1vh  2vh;
+    border-radius: 5px;
+    height : 2.5vh;
+    img {
+      margin-top :-2vh;
+      padding :0;
+    }
+      
+    `
+          
 
 /**
  * ! All the styles are pure css
@@ -608,5 +660,10 @@ export {
   GameInfoText,
   AlertTitle,
   BoardContainer,
-  AlertContainer
+  AlertContainer,
+
+  JoinRoomButton,
+  JoinRoomForm,
+  JoinRoomInput
+
 }

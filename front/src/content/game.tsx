@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
     Alert, Board
 } from '../components';
@@ -9,6 +9,14 @@ import {
     GameInfoText,
 } from '../custom-styles';
 
+import gameService from 
+    '../service/game';
+import socketService from
+    '../service/socket';
+
+
+import gameContext from 
+    '../gameContext';
 
 
 const GameContent = () => {
@@ -28,6 +36,14 @@ const GameContent = () => {
     const [reset, setreset] = useState(false);
     const [clear, setclear] = useState(false);
     const [times, settimes] = useState(0);
+    const {
+        playerSymbol,
+        setPlayerSymbol,
+        setPlayerTurn,
+        isPlayerTurn,
+        setGameStarted,
+        isGameStarted,
+      } = useContext(gameContext);
 
     //concat new game to gamestate
     const newGame = () => {
@@ -149,7 +165,7 @@ const GameContent = () => {
 
     return (
         <>
-            <GameInfo>
+            <GameInfo className="disabled">
                 <Button onClick={() =>
                     newGame()
                 } disabled={started}>
@@ -173,7 +189,7 @@ const GameContent = () => {
                 squares={gameState.history[gameState.stepNumber].squares}
                 onClick={(i) => handleClick(i)}
                 reset={reset || clear}
-
+                disabled={!isGameStarted}
             />
             {
                 end &&
