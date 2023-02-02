@@ -71,6 +71,7 @@ To run the app, follow these steps:
         alt="XO Game with React and Styled Components by Abderox"
     />
 </p>
+
 ## Contributions
 
 If you would like to contribute to the development of this app, please fork the repository and submit a pull request. Abderox is open to suggestions and improvements to make this project the best it can be.
