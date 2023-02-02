@@ -5,7 +5,7 @@ class SocketService {
     public  socket: Socket ;
     
     constructor() {
-        this.socket = io("https://xso.onrender.com/");
+        this.socket = io("http://localhost:9000");
     }
     
     
