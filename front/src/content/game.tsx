@@ -181,6 +181,10 @@ const GameContent = () => {
             setreset(false);
             setstarted(false);
             setInRoom(false);
+            setWaiting(false);
+            setdata(null);
+            alert("The opponent has left!")
+            
 
         })
     }

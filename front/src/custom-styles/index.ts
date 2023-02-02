@@ -715,7 +715,7 @@ const GameInfoText =
                  -31px -31px 84px #ffffff;
 
     @media
-    (max-width: 400px) {
+    (max-width: 300px) {
       width : 2.1rem;
       height : 2.1rem;
       bottom :0;

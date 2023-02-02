@@ -134,11 +134,11 @@ const leaveRoom = () => {
     if (!socket) return;
 
     gameService.leave(socket, roomName);
+    setGameStarted(false);
+    setPlayerTurn(false);
+    setPlayerSymbol("");
     setInRoom(false);
     setWaiting(false);
-    setPlayerSymbol("");
-    setPlayerTurn(false);
-    setGameStarted(false);
     setdata(null);
 
     alert("You have left the room !");
