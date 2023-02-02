@@ -15,7 +15,8 @@ import {
   FooterText,
   JoinRoomButton,
   JoinRoomForm,
-  JoinRoomInput
+  JoinRoomInput,
+  LeaveRoomButton
 } from './custom-styles';
 
 import { io } from 'socket.io-client';
@@ -54,7 +55,7 @@ const App = () => {
 
   const connectSocket = async () => {
     const socket = await socketService
-      .connect("http://localhost:9000")
+      .connect("http://192.168.1.111:9000")
       .catch((err) => {
         console.log("Error: ", err);
       });
@@ -128,7 +129,20 @@ const App = () => {
 
   };
 
+const leaveRoom = () => {
+    const socket = socketService.socket;
+    if (!socket) return;
 
+    gameService.leave(socket, roomName);
+    setInRoom(false);
+    setWaiting(false);
+    setPlayerSymbol("");
+    setPlayerTurn(false);
+    setGameStarted(false);
+    setdata(null);
+
+    alert("You have left the room !");
+  };
 
 
   return (
@@ -168,7 +182,7 @@ const App = () => {
                   <>
                     <JoinRoomInput type="text" name="room" onChange={handleRoomNameChange} />
                     <JoinRoomButton type="submit">
-                      <img src="https://img.icons8.com/external-bearicons-detailed-outline-bearicons/64/FFFFFF/external-Join-social-media-bearicons-detailed-outline-bearicons.png" alt="join" />
+                      <img src="https://img.icons8.com/external-bearicons-detailed-outline-bearicons/64/31CCCC/external-Join-social-media-bearicons-detailed-outline-bearicons.png" alt="join" />
                     </JoinRoomButton>
                   </>
                 }
@@ -188,6 +202,8 @@ const App = () => {
           </GameContainer>
 
         </Container>
+     
+
         <DivFooter>
           <Footer>
             <FooterText>
@@ -203,7 +219,14 @@ const App = () => {
 
             </FooterText>
           </Footer>
+          
         </DivFooter >
+   {   isInRoom &&  <LeaveRoomButton
+          onClick={leaveRoom}
+          disabled={!isInRoom}
+        >
+       <img src="https://img.icons8.com/material-sharp/28/ff6347/export.png" alt="leave"/>
+        </LeaveRoomButton>}
       </Appcontainer >
     </GameContext.Provider>
 

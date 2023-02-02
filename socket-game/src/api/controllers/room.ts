@@ -93,8 +93,18 @@ export class RoomController {
     @OnMessage('leave')
     public async leaveRoom(@ConnectedSocket() socket: Socket, @MessageBody() data: any, @SocketIO() io: Server) {
         console.log('leave room', data);
+
+        // delete room
+        const room = io.sockets.adapter.rooms.get(data.room);
         socket.leave(data.room);
-        socket.emit('leaved', data.room);
-        console.log('leaved room', data.room)
+        socket.to(
+            data.room
+        ).emit('left', data.room);
+        console.log('leaved room', data.room);
+
+        if(room && room.size === 1) {
+            io.sockets.adapter.rooms.delete(data.room);
+        }
+     
     }
 }

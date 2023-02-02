@@ -48,7 +48,8 @@ const GameContent = () => {
         roomName,
         data,
         setdata,
-        isInRoom
+        isInRoom,
+        setInRoom
     } = useContext(gameContext);
 
     //concat new game to gamestate
@@ -134,13 +135,14 @@ const GameContent = () => {
         handleWin();
         handleRematch();
         newGame();
+        handleLeave();
     }, [isInRoom]);
 
 
     const handleRematch = () => {
         gameService.onRematch(socketService.socket, (data) => {
             setWaiting(false);
-            console.log("hello")
+            // alert(playerSymbol)
             setGameState({
                 history: [{
                     squares: Array(9).fill(null),
@@ -150,10 +152,36 @@ const GameContent = () => {
             })
             setGameStarted(true);
             setPlayerTurn(data.start);
-            setPlayerSymbol(data.symbol);
+            // setPlayerSymbol(data.symbol);
             setclear(false);
             setreset(false);
             setstarted(true);
+            // alert(playerSymbol)
+
+        })
+    }
+
+
+    const handleLeave = () => {
+        console.log("leaving")
+        gameService.onLeave(socketService.socket, (data) => {
+            alert("The opponent has left!")
+            setWaiting(false);
+            setGameState({
+                history: [{
+                    squares: Array(9).fill(null),
+                }],
+                stepNumber: 0,
+                xIsNext: true,
+            })
+            setGameStarted(false);
+            setPlayerTurn(false);
+            setPlayerSymbol("");
+            setclear(false);
+            setreset(false);
+            setstarted(false);
+            setInRoom(false);
+
         })
     }
 
@@ -180,9 +208,7 @@ const GameContent = () => {
         gameService.onGameWin(socketService.socket, (data) => {
             console.log(data)
 
-            setstate(
-                data.state
-            )
+            setstate(data.state)
             setend(true);
             settimes(data.times);
             setGameStarted(false);
@@ -217,8 +243,8 @@ const GameContent = () => {
         if (calculateWinner(squares)) {
             setstate(
                 {
-                    x: (calculateWinner(squares) === 'X') ? state.x + 1 : state.x,
-                    o: (calculateWinner(squares) === 'O') ? state.o + 1 : state.o
+                    x: (calculateWinner(squares) === playerSymbol?.toUpperCase()) ? state.x + 1 : state.x,
+                    o: (calculateWinner(squares) !== playerSymbol?.toUpperCase()) ? state.o + 1 : state.o
                 }
             )
             setend(true);
@@ -231,8 +257,8 @@ const GameContent = () => {
                     winner: calculateWinner(squares),
                     times: times + 1,
                     state: {
-                        x: (calculateWinner(squares) === 'X') ? state.x + 1 : state.x,
-                        o: (calculateWinner(squares) === 'O') ? state.o + 1 : state.o
+                        o: (calculateWinner(squares) === playerSymbol?.toUpperCase()) ? state.x + 1 : state.x,
+                        x: (calculateWinner(squares) !== playerSymbol?.toUpperCase()) ? state.o + 1 : state.o
                     }
                 }
             )
@@ -245,6 +271,17 @@ const GameContent = () => {
         ) {
             setend(true);
             settimes(() => (times + 1));
+            gameService.gameWin(
+                socketService.socket,
+                {
+                    winner: calculateWinner(squares),
+                    times: times + 1,
+                    state: {
+                        x: state.o,
+                        o: state.x
+                    }
+                }
+            )
 
         }
 
@@ -309,7 +346,7 @@ const GameContent = () => {
                     {started ? "started" : "start"}
                 </Button> */}
                 <GameInfoText>
-                    X:{state.x} {" | "} O:{state.o}
+                    You:{state.x} {" | "} {"'em"}:{state.o}
                 </GameInfoText>
                 {(isInRoom && !isGameStarted && times > 0) && <Button onClick={() =>
                     rematch()

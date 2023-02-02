@@ -19,7 +19,7 @@ const Alert = (
             </AlertTitle>
             <DisplayScore>
                 <span className="big-letter">
-                    X:
+                    You:
                 </span>
                 <span className="span">
                     {state.x}
@@ -28,7 +28,7 @@ const Alert = (
                     VS
                 </span>
                 <span className="big-letter">
-                    O:
+                    {"'em"}:
                 </span>
                 <span className="span">
                     {state.o}

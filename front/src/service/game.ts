@@ -62,6 +62,22 @@ class GameService {
           socket.emit("rematch", data);
         }
 
+        public async leave(
+            socket: Socket,
+            room: string
+        )
+        {
+            socket.emit("leave", { room });
+        }
+
+        public async onLeave(
+            socket: Socket,
+            callback: (data: any) => void
+        )
+        {
+            socket.on("left", callback);
+        }
+
 
 }
 

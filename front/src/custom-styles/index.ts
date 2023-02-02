@@ -13,6 +13,8 @@ const Appcontainer = styled.div`
   overflow: auto;
   
 
+  
+
   `
 
 const Container = styled.div`
@@ -27,7 +29,7 @@ const Container = styled.div`
 
 const GameTitle = styled.div`
   font-weight: 700;
-  font-family: 'Press Start 2P', cursive;
+  font-family: 'Maven Pro', sans-serif;
 
  
 
@@ -37,7 +39,7 @@ const GameDescription = styled.div`
   font-size: 1.5rem;
   font-weight: 400;
   margin-bottom: 1rem;
-  font-family: 'Press Start 2P', cursive;
+  font-family: 'Maven Pro', sans-serif;
   text-align: center;
   width: 100%;
   line-height: 1.5;
@@ -70,6 +72,26 @@ const Header = styled.header`
   justify-content: center;
   color: #000000;
 
+  @media
+  (max-width: 768px) {
+    font-size: 2rem;
+  }
+
+  @media
+  (max-width: 600px) {
+    font-size: 1.95rem;
+  }
+
+  @media
+  (max-width: 400px) {
+    font-size: 1.5rem;
+  }
+
+  @media
+  (max-width: 300px) {
+    font-size: 1rem;
+  }
+
 `
 
 const TextWithShadow = styled.h1`
@@ -95,7 +117,25 @@ filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#60EFFF", en
   text-decoration-style: wavy;
   text-decoration-line: underline;
   
+  @media
+  (max-width: 768px) {
+    text-decoration-thickness: 0.5rem;
+  }
 
+  @media
+  (max-width: 600px) {
+    text-decoration-thickness: 0.4rem;
+  }
+
+  @media
+  (max-width: 400px) {
+    text-decoration-thickness: 0.3rem;
+  }
+
+  @media
+  (max-width: 300px) {
+    text-decoration-thickness: 0.2rem;
+  }
 
 
 `
@@ -103,8 +143,8 @@ filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#60EFFF", en
 const GameContainer =
   styled.div`
   margin-top : 7rem;
-  height : 550px;
-  width : 550px;
+  width: 40vh ;
+  height: 40vh ;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -118,12 +158,16 @@ const GameContainer =
     linear-gradient(to right,
       #31CCCC, #3B86DE) border-box;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-  /*max-width*/
-  @media (max-width: 768px) {
-    width: 40vh;
-    height: 40vh;
+ 
 
+  @media
+  (min-width:
+    768px) {
+      height : 550px;
+      width : 550px;
   }
+
+
  
 
 `
@@ -135,6 +179,7 @@ width : 550px;
 
 @media (max-width: 768px) {
   width: 40vh;
+  
 
 }
 
@@ -180,11 +225,21 @@ const FooterText =
   styled.div`
   font-size: 2.2vm;
   font-weight: 400;
-  font-family: 'Press Start 2P', cursive;
+  font-family: 'Maven Pro', sans-serif;
   text-align: center;
   width: 100%;
   line-height: 0.2;
 
+  @media
+  (max-width: 768px and
+    min-width: 400px) {
+    font-size: 10pt;
+  }
+
+  @media
+  (max-width: 400px) {
+    font-size: 7pt;
+  }
   `
 
 // game content
@@ -623,17 +678,48 @@ const GameInfoText =
     all : unset;
     cursor: pointer;
     margin: 1vh 1vh;
-    background :
-    linear-gradient(to right,
-    #31CCCC, #3B86DE) ;
-    padding: 1vh  2vh;
     border-radius: 5px;
-    height : 2.5vh;
     img {
-      margin-top :-2vh;
       padding :0;
     }
+
+    @media
+    (max-width: 768px) {
+      img {
+        width : 3.1rem;
+        height: 3rem;
+      }
+    }
       
+    `
+
+
+    const LeaveRoomButton =
+    styled.button`
+    position:absolute;
+    bottom : 30px;
+    border :
+    1px solid tomato;  
+    right : 30px;
+    cursor: pointer;
+    margin: 1vh 1vh;
+    border-radius: 50%;
+    width : 3rem;
+    height : 3rem;
+    img {
+      padding :0;
+    }
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow:  31px 31px 84px #e6e6e6,
+                 -31px -31px 84px #ffffff;
+
+    @media
+    (max-width: 400px) {
+      width : 2.1rem;
+      height : 2.1rem;
+      bottom :0;
+    }
     `
           
 
@@ -664,6 +750,8 @@ export {
 
   JoinRoomButton,
   JoinRoomForm,
-  JoinRoomInput
+  JoinRoomInput,
+
+  LeaveRoomButton
 
 }
