@@ -152,10 +152,11 @@ const GameContent = () => {
             })
             setGameStarted(true);
             setPlayerTurn(data.start);
-            // setPlayerSymbol(data.symbol);
+            setPlayerSymbol(data.symbol);
             setclear(false);
             setreset(false);
             setstarted(true);
+            setend(false);
             // alert(playerSymbol)
 
         })
