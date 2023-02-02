@@ -697,7 +697,7 @@ const GameInfoText =
     const LeaveRoomButton =
     styled.button`
     position:absolute;
-    bottom : 30px;
+    bottom : 40px;
     border :
     1px solid tomato;  
     right : 30px;
