@@ -55,7 +55,7 @@ const App = () => {
 
   const connectSocket = async () => {
     const socket = await socketService
-      .connect("https://x-game-socket.vercel.app/")
+      .connect("https://xso.onrender.com/")
       .catch((err) => {
         console.log("Error: ", err);
       });
