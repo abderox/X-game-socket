@@ -67,7 +67,7 @@ To run the app, follow these steps:
     align="center"
 >
     <img
-        src="./github/4.png"
+        src="./github/5.png"
         alt="XO Game with React and Styled Components by Abderox"
     />
 </p>
