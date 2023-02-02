@@ -55,7 +55,7 @@ const App = () => {
 
   const connectSocket = async () => {
     const socket = await socketService
-      .connect("http://192.168.1.111:9000")
+      .connect("http://localhost:9000")
       .catch((err) => {
         console.log("Error: ", err);
       });
