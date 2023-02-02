@@ -9,13 +9,13 @@ import {
     GameInfoText,
 } from '../custom-styles';
 
-import gameService from 
+import gameService from
     '../service/game';
 import socketService from
     '../service/socket';
 
 
-import gameContext from 
+import gameContext from
     '../gameContext';
 
 
@@ -43,20 +43,57 @@ const GameContent = () => {
         isPlayerTurn,
         setGameStarted,
         isGameStarted,
-      } = useContext(gameContext);
+        setWaiting,
+        isWaiting,
+        roomName,
+        data,
+        setdata,
+        isInRoom
+    } = useContext(gameContext);
 
     //concat new game to gamestate
-    const newGame = () => {
+    const newGame = async () => {
+        console.log("inside")
+        console.log(playerSymbol)
+
+
+        if (data) {
+            setWaiting(false);
+
+            setGameState({
+                history: [{
+                    squares: Array(9).fill(null),
+                }],
+                stepNumber: 0,
+                xIsNext: playerSymbol === 'x',
+            })
+            setGameStarted(true);
+
+            // setPlayerTurn(data.start);
+            // setPlayerSymbol(data.symbol);
+        }
+
+
+        gameService.onGameStarted(socketService.socket, (data) => {
+            setWaiting(false);
+            console.log("hello")
+            setGameState({
+                history: [{
+                    squares: Array(9).fill(null),
+                }],
+                stepNumber: 0,
+                xIsNext: playerSymbol === 'x',
+            })
+            setGameStarted(true);
+            setPlayerTurn(data.start);
+            setPlayerSymbol(data.symbol);
+        })
+
+
+
         setclear(false);
         setreset(false);
         setstarted(true);
-        setGameState({
-            history: [{
-                squares: Array(9).fill(null),
-            }],
-            stepNumber: 0,
-            xIsNext: true,
-        })
 
     }
 
@@ -77,47 +114,86 @@ const GameContent = () => {
         setclear(true);
     }
 
-    useEffect(
-        () => {
-            if (!started) {
-                return;
-            }
-            const history = gameState.history.slice(0, gameState.stepNumber + 1);
-            const current = history[history.length - 1];
-            const squares = current.squares.slice();
-            if (calculateWinner(squares)) {
-                setstate(
-                    {
-                        x: !gameState.xIsNext ? state.x + 1 : state.x,
-                        o: gameState.xIsNext ? state.o + 1 : state.o
-                    }
-                )
-                setend(true);
-                settimes(() => (times + 1));
+    // useEffect(
+    //     () => {
+    //         if (!started) {
+    //             return;
+    //         }
+    //         const history = gameState.history.slice(0, gameState.stepNumber + 1);
+    //         const current = history[history.length - 1];
+    //         const squares = current.squares.slice();
+
+    //     }
+    //     , [
+    //         gameState.stepNumber,
+    //     ]
+    // )
+
+    useEffect(() => {
+        handleGameMove();
+        handleWin();
+        handleRematch();
+        newGame();
+    }, [isInRoom]);
 
 
-            }
+    const handleRematch = () => {
+        gameService.onRematch(socketService.socket, (data) => {
+            setWaiting(false);
+            console.log("hello")
+            setGameState({
+                history: [{
+                    squares: Array(9).fill(null),
+                }],
+                stepNumber: 0,
+                xIsNext: true,
+            })
+            setGameStarted(true);
+            setPlayerTurn(data.start);
+            setPlayerSymbol(data.symbol);
+            setclear(false);
+            setreset(false);
+            setstarted(true);
+        })
+    }
 
-            else if (
-                !squares.includes(null)
-            ) {
-                setend(true);
-                settimes(() => (times + 1));
+    const handleGameMove = () => {
 
-            }
+        gameService.onMove(socketService.socket, (squares) => {
+            console.log(data)
+            console.log(playerSymbol)
+            console.log("here")
+            setGameState({
+                history: gameState.history.concat([{
+                    squares: squares,
+                }]),
+                stepNumber: gameState.history.length,
+                xIsNext: playerSymbol === 'x',
+            });
+            setPlayerTurn(true);
+        })
 
-        }
-        , [
-            gameState.stepNumber,
-        ]
-    )
+    }
 
 
+    const handleWin = () => {
+        gameService.onGameWin(socketService.socket, (data) => {
+            console.log(data)
 
+            setstate(
+                data.state
+            )
+            setend(true);
+            settimes(data.times);
+            setGameStarted(false);
+        })
+    }
 
     const handleClick = (i: number) => {
 
-        if (!started) {
+        console.log(isPlayerTurn);
+
+        if (!started || !isPlayerTurn) {
             return;
         }
 
@@ -129,7 +205,7 @@ const GameContent = () => {
         }
 
 
-        squares[i] = gameState.xIsNext ? 'X' : 'O';
+        squares[i] = playerSymbol.toUpperCase();
         setGameState({
             history: history.concat([{
                 squares: squares,
@@ -137,6 +213,67 @@ const GameContent = () => {
             stepNumber: history.length,
             xIsNext: !gameState.xIsNext,
         });
+
+        if (calculateWinner(squares)) {
+            setstate(
+                {
+                    x: (calculateWinner(squares) === 'X') ? state.x + 1 : state.x,
+                    o: (calculateWinner(squares) === 'O') ? state.o + 1 : state.o
+                }
+            )
+            setend(true);
+            settimes(() => (times + 1));
+            setGameStarted(false);
+
+            gameService.gameWin(
+                socketService.socket,
+                {
+                    winner: calculateWinner(squares),
+                    times: times + 1,
+                    state: {
+                        x: (calculateWinner(squares) === 'X') ? state.x + 1 : state.x,
+                        o: (calculateWinner(squares) === 'O') ? state.o + 1 : state.o
+                    }
+                }
+            )
+
+
+        }
+
+        else if (
+            !squares.includes(null)
+        ) {
+            setend(true);
+            settimes(() => (times + 1));
+
+        }
+
+
+
+
+        gameService.move(socketService.socket, squares);
+        setPlayerTurn(false);
+
+
+    }
+
+    // const handleRematch = () => {
+    //     setend(false);
+    //     setstarted(true);
+    //     setclear(true);
+    //     setreset(false);
+    //     gameService.rematch(socketService.socket,{message:"Let's rematch!"});
+    // }
+
+
+    const rematch = () => {
+        // newGame();
+        setend(false);
+        setclear(false);
+        setreset(false);
+        setstarted(true);
+        gameService.rematch(socketService.socket, { room: roomName });
+
     }
 
 
@@ -165,30 +302,35 @@ const GameContent = () => {
 
     return (
         <>
-            <GameInfo className="disabled">
-                <Button onClick={() =>
+            <GameInfo className={""}>
+                {/* <Button onClick={() =>
                     newGame()
                 } disabled={started}>
                     {started ? "started" : "start"}
-                </Button>
+                </Button> */}
                 <GameInfoText>
                     X:{state.x} {" | "} O:{state.o}
                 </GameInfoText>
+                {(isInRoom && !isGameStarted && times > 0) && <Button onClick={() =>
+                    rematch()
+                }>
+                    Rematch
+                </Button>}
                 <GameInfoText>
                     Times : {times}
                 </GameInfoText>
-                <Button onClick={() =>
+                {/* <Button onClick={() =>
                     resetGame()
                 }>
                     Reset
-                </Button>
+                </Button> */}
             </GameInfo>
 
 
             <Board
                 squares={gameState.history[gameState.stepNumber].squares}
                 onClick={(i) => handleClick(i)}
-                reset={reset || clear}
+                reset={clear}
                 disabled={!isGameStarted}
             />
             {

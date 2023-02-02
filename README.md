@@ -21,8 +21,8 @@ This app is a simple, two-player XO game that is built using React and Styled Co
 
 ## Upcoming Features
 
-- Multiplayer capability using socket.io.
-- Improved styling and user interface.
+- Multiplayer capability using socket.io. [Done]
+- Improved styling and user interface. [Done]
 
 ## Installation
 
@@ -63,7 +63,14 @@ To run the app, follow these steps:
         alt="XO Game with React and Styled Components by Abderox"
     />
 </p>
-
+<p
+    align="center"
+>
+    <img
+        src="./github/4.png"
+        alt="XO Game with React and Styled Components by Abderox"
+    />
+</p>
 ## Contributions
 
 If you would like to contribute to the development of this app, please fork the repository and submit a pull request. Abderox is open to suggestions and improvements to make this project the best it can be.

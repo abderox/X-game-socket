@@ -45,9 +45,12 @@ const App = () => {
   const [roomName, setRoomName] = useState("");
   const [isJoining, setJoining] = useState(false);
   const [isInRoom, setInRoom] = useState(false);
-  const [playerSymbol, setPlayerSymbol] = useState<"x" | "o">("x");
+  const [playerSymbol, setPlayerSymbol] = useState("");
   const [isPlayerTurn, setPlayerTurn] = useState(false);
   const [isGameStarted, setGameStarted] = useState(false);
+  const [isWaiting, setWaiting] = useState(false);
+  const [error, seterror] = useState(null);
+  const [data, setdata] = useState(null);
 
   const connectSocket = async () => {
     const socket = await socketService
@@ -72,6 +75,11 @@ const App = () => {
     setPlayerTurn,
     isGameStarted,
     setGameStarted,
+    isWaiting,
+    setWaiting,
+    data,
+    setdata,
+    roomName
   };
 
   const handleRoomNameChange = (e: React.ChangeEvent<any>) => {
@@ -90,15 +98,33 @@ const App = () => {
     const joined = await gameService
       .joinGameRoom(socket, roomName)
       .catch((err) => {
-        alert(err);
+        seterror(err);
       });
 
+    console.log(joined)
 
-    if (joined) setInRoom(true);
+    if (joined) {
+      setInRoom(true);
+      setWaiting(true);
+      const res = await gameService.onGameStarted(socketService.socket, (data) => {
+        console.log("inside 3")
+        console.log(data)
+        if (data) {
+          setdata(data)
+          setPlayerSymbol(data.symbol);
+          setPlayerTurn(data.start);
+        }
+      });
+    }
 
     setJoining(false);
 
-    console.log("joined: ", joined);
+    setTimeout(
+      () => {
+        seterror(null);
+      }
+      , 5000
+    )
 
   };
 
@@ -113,33 +139,50 @@ const App = () => {
           <Header>
             <GameTitle>
               <TextWithShadow>
-                {"><"}
+                {playerSymbol !== "" ? `PLAYER ${playerSymbol?.toUpperCase()} ` : "><"}
               </TextWithShadow>
             </GameTitle>
             <GameDescription>
-              <span className="blinking-text">Invite your mate and kick his ass !</span>
+              {!isGameStarted ?
+                <span className={!error ? "blinking-text" : "error"}>{error ? error : "Invite your mate and kick his ass !"}</span>
+                : <span className={"blinking-text"}>{isPlayerTurn ? "Your turn" : "Waiting your rival to draw"}</span>
+              }
             </GameDescription>
           </Header>
 
           <GameContainer >
+            {(!isGameStarted) &&
 
-            <JoinRoomForm onSubmit={joinRoom}>
+              <JoinRoomForm onSubmit={joinRoom}>
 
-              {isJoining ?
-                <>
-                  <span className="Joining-text">Joining </span>
+                {isJoining &&
+                  <>
+                    <span className="Joining-text">Joining </span>
 
-                  <span className=" Joining-text Joining-points">...</span>
-                </>
-                :
-                <>
-                  <JoinRoomInput type="text" name="room" onChange={handleRoomNameChange} />
-                  <JoinRoomButton type="submit">
-                    <img src="https://img.icons8.com/external-bearicons-detailed-outline-bearicons/64/FFFFFF/external-Join-social-media-bearicons-detailed-outline-bearicons.png" alt="join" />
-                  </JoinRoomButton>
-                </>
-              }
-            </JoinRoomForm>
+                    <span className=" Joining-text Joining-points">...</span>
+                  </>
+
+                }
+                {
+                  (!isInRoom && !isJoining && !isWaiting) &&
+                  <>
+                    <JoinRoomInput type="text" name="room" onChange={handleRoomNameChange} />
+                    <JoinRoomButton type="submit">
+                      <img src="https://img.icons8.com/external-bearicons-detailed-outline-bearicons/64/FFFFFF/external-Join-social-media-bearicons-detailed-outline-bearicons.png" alt="join" />
+                    </JoinRoomButton>
+                  </>
+                }
+                {
+                  (!isJoining && isWaiting) &&
+                  <>
+                    <span className="Joining-text">Waiting for opponent</span>
+
+                    <span className=" Joining-text Joining-points">...</span>
+                  </>
+
+                }
+              </JoinRoomForm>
+            }
 
             <GameContent />
           </GameContainer>

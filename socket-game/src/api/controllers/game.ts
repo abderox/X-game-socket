@@ -29,18 +29,43 @@ export class GameController {
     ) {
         console.log("move", data);
         const gameRoom = this.getSocketGameRoom(socket);
-        socket.to(gameRoom).emit("move", data);
+        socket.to(gameRoom).emit("move_", data);
+        // socket.emit("move_", data);
     }
 
     @OnMessage("game_win")
     public async gameWin(
         @SocketIO() io: Server,
         @ConnectedSocket() socket: Socket,
-        @MessageBody() message: any
+        @MessageBody() data: any
     ) {
         const gameRoom = this.getSocketGameRoom(socket);
-        socket.to(gameRoom).emit("on_game_win", message);
+        socket.to(gameRoom).emit("on_game_win", data);
     }
+
+   
+    @OnMessage('rematch')
+    public async rematch(@ConnectedSocket() socket: Socket, @MessageBody() data: any, @SocketIO() io: Server) {
+        
+
+        // get the room
+        const room = io.sockets.adapter.rooms.get(data.room);
+       console.log("hello")
+
+
+        // if the room doesn't exist, create it
+        
+            
+                socket.to(data.room).emit("onRematch", { start: false, symbol: "o" });
+                // send to the second  client
+                socket.emit("onRematch", { start: true, symbol: "x" });
+                
+          
+            
+        
+
+    }
+
 
 
 }

@@ -140,3 +140,11 @@ code {
   }
 
 
+
+  .error{
+    background-color: tomato;
+    color: #ffffff;
+    border-right: 0.15em solid #ffffff;
+    white-space: nowrap;
+    letter-spacing: 0.15em;
+    }

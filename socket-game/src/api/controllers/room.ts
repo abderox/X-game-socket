@@ -16,7 +16,7 @@ export class RoomController {
 
     @OnMessage('join')
     public async joinRoom(@ConnectedSocket() socket: Socket, @MessageBody() data: any, @SocketIO() io: Server) {
-        console.log('join room', data);
+        
 
         // get the room
         const room = io.sockets.adapter.rooms.get(data.room);
@@ -30,11 +30,48 @@ export class RoomController {
         console.log("🚀 ~ file: room.ts:27 ~ RoomController ~ joinRoom ~ socketRoomsFilter", socketRoomsFilter.length)
 
         // if the room doesn't exist, create it
+        console.log("hehe 1")
          if(socketRoomsFilter.length>0 || (room && room.size === 2)) {
-            socket.emit('full', data.room);
+            console.log("hehe")
+            socket.emit('room_join_error', {
+                error: 'Unfortunately this Room is full :('
+            });
             console.log('room full', data.room)
         }
-        // check if not the same member : onother way
+   
+         // if the room exists, and members less than 2
+         else  {
+            console.log("Inside jfklsdjfd jdjd")
+
+          if(!room)
+          {
+            socket.join(data.room);
+            socket.emit('joined', data.room);
+            console.log("Inside jfklsdjfd",socket.id)
+          }
+
+            else if(room.size === 1)
+            {
+                socket.join(data.room);
+                socket.emit("start_game", { start: true, symbol: "x" });
+                socket.emit('joined', data.room);
+
+            }
+
+            
+              if(room.size === 2) {
+            console.log("Inside jfklsdjfd",socket.id)
+                console.log("Inside",room.size)
+                socket.to(data.room).emit("start_game", { start: false, symbol: "o" });
+                console.log("Inside 3")
+                // send to the second  client
+                socket.emit("start_game", { start: true, symbol: "x" });
+                
+          
+            }
+        }
+
+             // check if not the same member : onother way
         //  else if( room.size === 2) {
         //     const clients = Array.from(room);
         //     console.log('clients', clients)
@@ -45,18 +82,6 @@ export class RoomController {
         //     }
         // } 
       
-         // if the room exists, and members less than 2
-         else  {
-            socket.join(data.room);
-            socket.emit('joined', data.room);
-
-            if(room.size === 2) {
-                socket.emit("start_game", { start: true, symbol: "x" });
-                socket
-                .to(data.room)
-                .emit("start_game", { start: false, symbol: "o" });
-            }
-        }
         // if the room is full, send an error message
        
 

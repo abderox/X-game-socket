@@ -549,7 +549,7 @@ const Button =
     font-weight: bold;
     cursor: pointer;
     padding: 1vh 2vh;
-    width : 6rem;
+    max-width : 10rem;
     margin: 1vh 1vh;
     border-radius: 5px;
     

@@ -11,20 +11,18 @@ class GameService {
         });
       }
 
-      public async move(socket: Socket, data: any): Promise<boolean> {
-        return new Promise((rs, rj) => {
+      public async move(socket: Socket, data: any) {
+      
           socket.emit("move", data);
-          socket.on("move", () => rs(true));
-          socket.on("move_error", ({ error }) => rj(error));
-        });
+        //   socket.on("move", () => rs(true));
+        //   socket.on("move_error", ({ error }) => rj(error));
+      
       }
 
-        public async gameWin(socket: Socket, data: any): Promise<boolean> {
-        return new Promise((rs, rj) => {
+        public async gameWin(socket: Socket, data: any) {
+        
           socket.emit("game_win", data);
-          socket.on("game_win", () => rs(true));
-          socket.on("game_win_error", ({ error }) => rj(error));
-        });
+         
         }
 
         public async onGameStarted(
@@ -40,7 +38,7 @@ class GameService {
             callback: (data: any) => void
         )
         {
-            socket.on("game_win", callback);
+            socket.on("on_game_win", callback);
         }
 
         public async onMove(
@@ -48,8 +46,22 @@ class GameService {
             callback: (data: any) => void
         )
         {
-            socket.on("move", callback);
+            socket.on("move_", callback);
         }
+
+
+        public async  onRematch(
+            socket: Socket,
+            callback: (data: any) => void
+        )
+        {
+            socket.on("onRematch", callback);
+        }
+
+        public async rematch(socket: Socket, data: any) {
+          socket.emit("rematch", data);
+        }
+
 
 }
 
