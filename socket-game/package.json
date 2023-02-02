@@ -12,7 +12,8 @@
     "jade": "~1.11.0",
     "morgan": "~1.9.1",
     "socket-controllers": "^0.0.5",
-    "socket.io": "^4.1.2"
+    "socket.io": "^4.1.2",
+    "glob": "^7.1.7",
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
