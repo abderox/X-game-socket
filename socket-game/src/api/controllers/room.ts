@@ -96,14 +96,17 @@ export class RoomController {
 
         // delete room
         const room = io.sockets.adapter.rooms.get(data.room);
-        socket.leave(data.room);
-        socket.to(
-            data.room
-        ).emit('left', data.room);
+       
         console.log('leaved room', data.room);
 
         if(room && room.size === 1) {
-            io.sockets.adapter.rooms.delete(data.room);
+            socket.leave(data.room);
+        }
+        else {
+            socket.leave(data.room);
+            socket.to(
+                data.room
+            ).emit('left', data.room);
         }
      
     }

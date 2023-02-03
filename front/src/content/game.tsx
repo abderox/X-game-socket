@@ -131,6 +131,22 @@ const GameContent = () => {
     // )
 
     useEffect(() => {
+
+        if(!isInRoom)
+        {
+            setGameState({
+                history: [{
+                    squares: Array(9).fill(null),
+                }],
+                stepNumber: 0,
+                xIsNext: true,
+            })
+            setstate({
+                x: 0,
+                o: 0
+            })
+            settimes(0);
+        }
         handleGameMove();
         handleWin();
         handleRematch();
@@ -166,8 +182,8 @@ const GameContent = () => {
     const handleLeave = () => {
         console.log("leaving")
         gameService.onLeave(socketService.socket, (data) => {
-            alert("The opponent has left!")
             setWaiting(false);
+            alert("The opponent has left!");
             setGameState({
                 history: [{
                     squares: Array(9).fill(null),
@@ -175,6 +191,11 @@ const GameContent = () => {
                 stepNumber: 0,
                 xIsNext: true,
             })
+            setstate({
+                x: 0,
+                o: 0
+            })
+            settimes(0);
             setGameStarted(false);
             setPlayerTurn(false);
             setPlayerSymbol("");
@@ -182,9 +203,9 @@ const GameContent = () => {
             setreset(false);
             setstarted(false);
             setInRoom(false);
-            setWaiting(false);
             setdata(null);
-            alert("The opponent has left!")
+           
+            gameService.leave(socketService.socket, roomName);
             
 
         })
